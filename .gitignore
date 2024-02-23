@@ -1,5 +1,4 @@
-# Created by https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks
-# Edit at https://www.toptal.com/developers/gitignore?templates=python,jupyternotebooks
+week-*/data/*
 
 ### JupyterNotebooks ###
 # gitignore template for Jupyter Notebooks
@@ -183,5 +182,3 @@ poetry.toml
 
 # LSP config files
 pyrightconfig.json
-
-# End of https://www.toptal.com/developers/gitignore/api/python,jupyternotebooks
