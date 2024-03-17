@@ -1,0 +1,74 @@
+\documentclass{article}
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{url}
+
+\begin{document}
+
+\title{Security \& Privacy of Machine Learning --- Assignment 1 Write-Up}
+\author{Daan Brugmans (S1080742)}
+\date{\today}
+
+\maketitle
+
+My Jupyter notebook and report can also be found publicly on GitHub with the following URL: \url{https://github.com/daanbrugmans/ru-security-and-privacy-of-machine-learning-23-24/tree/main/assignment-1}
+
+My fulfillment of the assignment consists of two parts: the setup, which is the code I wrote in order to perform all the experiments that I need to do that will answer the assignment questions, and the assignment questions themselves.
+I will adhere to this structure for this write-up as well.
+
+\section{Setup}
+\subsection{Imports, Preparation, and Data}
+I use PyTorch as the main environment for building and training a deep learning model, since that is the deep learning framework I am most comfortable with. 
+To this end, I use the \textit{torch}, \textit{torchvision}, and \textit{torchattacks} packages.
+Prior to training, I execute some preparatory code.
+I set a seed for \textit{torch}, \textit{NumPy}, and Python itself for improved reproducibility, and I set the device on which we I perform the model training to speed up the process when possible.
+I load the CIFAR-10 dataset as three \textit{DataLoader} objects for performance and convenience.
+
+\subsection{Model}
+This part of my setup code consists of two class definitions. The first class is called \textit{CIFAR10NeuralNet}.
+It is a PyTorch convolutional network.
+It consists of two convolution blocks, followed by three linear blocks, and finally a Softmax block.
+This is the architecture of the models that we train on the CIFAR-10 dataset.
+My general approach for this architecture is to upsample the number of output channels significantly during convolution, so that the model can learn varying features from the different channels, and then to iteratively decrease the number of neurons in the linear layers, so that the most important and general features from the channels can be extracted.
+The second class is called \textit{NeuralModel}.
+This class is a collection of all processes and objects that are needed for training a \textit{CIFAR10NeuralNet}.
+It contains an instance of the \textit{CIFAR10NeuralNet}, its loss function, and its optimizer.
+It also contains functions for training and testing the \textit{CIFAR10NeuralNet}, both using regular clean data, as wel as adversarial training.
+Finally, it contains a function that can be used to plot the train/validation loss and accuracy for the most recent training run.
+I have chosen to implement it this way, so that all code related to the neural network and its architecture is encapsulated within a single class.
+In my opinion, this makes performing varying attacks very clean: with only a few rows of code, I am able to instantiate and train a new model.
+This makes the experiments easy to read and hides away set implementation details.
+
+\subsection{Attacks}
+Finally, I define the attacks that I perform on the neural network.
+I define three attack models: the Fast Gradient Sign Method (FGSM), the Gradient Descent Projection (GPD), and the Auto-GPD (AGPD) attacks.
+The implementations of these models are directly taken from the \textit{torchattacks} library.
+They are included here, because I wanted to make slight alterations to the standard implementation of \textit{torchattacks}, so that all attacks can be performed both targeted as well as untargeted.
+The class descriptions for every attack model contains a direct URL that will guide one towards the original implementation.
+
+\section{Assignment Questions}
+% \begin{table}
+%     \centering
+%     \begin{tabular}{cols}
+        
+%     \end{tabular}
+%     \caption{}
+%     \label{}
+% \end{table}
+
+For all assignment questions/experiments, I perform attacks with an unchanging set of hyperparameters.
+These may be found in table \ref{tab:attack_hyperparameters}
+
+\begin{table}
+    \centering
+    \begin{tabular}{c}
+        
+    \end{tabular}
+    \caption{}
+    \label{tab:attack_hyperparameters}
+\end{table}
+
+\end{document}
