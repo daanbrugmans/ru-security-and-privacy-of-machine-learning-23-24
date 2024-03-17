@@ -61,14 +61,96 @@ The class descriptions for every attack model contains a direct URL that will gu
 
 For all assignment questions/experiments, I perform attacks with an unchanging set of hyperparameters.
 These may be found in table \ref{tab:attack_hyperparameters}
-
 \begin{table}
     \centering
-    \begin{tabular}{c}
-        
+    \begin{tabular}{c|c|c|c|c}
+        & \textbf{Epsilon} & \textbf{Alpha} & \textbf{Steps} & \textbf{Rho} \\
+        \hline
+    \textbf{FGSM} & 0.2 & & & \\
+    \textbf{PGD} & 0.2 & $\frac{2}{255}$ & 10 & \\
+    \textbf{APGD} & 0.2 & & 10 & 0.75 
     \end{tabular}
-    \caption{}
+    \caption{Hyperparameters used for attack models.}
     \label{tab:attack_hyperparameters}
 \end{table}
+
+\subsection{Execute the untargeted and targeted version of the FGSM attack.
+Use class cat (class index 3) as your target for the targeted version. Evaluate
+the accuracy of the model and share your conclusions.}
+% \begin{table}
+%     \centering
+%     \begin{tabular}{c|c|c|c}
+%         & \textbf{Regular} & \textbf{Untargeted} & \textbf{Targeted} \\
+%         \textbf{FGSM}
+%     \end{tabular}
+%     \caption{Accuracies of the cleanly trained model when attacked}
+%     \label{tab:1a}
+% \end{table}
+% Results are summarized in table \ref{tab:1a}.
+The clean accuracy of the model is, unfortunately, not great: it is roughly 0.60.
+The untargeted adversarial accuracy is also roughly 0.60, while the targeted adversarial accuracy is about 0.14.
+We can conclude that the targeted attack is much more damaging to model performance.
+
+\subsection{Perform adversarial training using the FGSM attack. Then execute
+the untargeted and targeted version of the FGSM attack, same settings like in
+part (a), but now on the adversarial trained model. Evaluate the accuracy of
+the model and compare results with part (a). Share your conclusions.}
+When trained adversarially, the model reaches a clean accuracy of roughly 0.33.
+This adversarially trained model reaches an adversarial accuracy of roughly 0.30 for untargeted attacks, and roughly 0.25 for targeted attacks.
+We can see that, although overall accuracy has dropped notably compared to the model that was trained on clean data, the adversarially trained model is more robust to targeted attacks in particular.
+We can conclude that this is a typical example of how adversarial training generally decreases overall accuracy, and that robustness to adversarial examples is a trade-off.
+
+\subsection{Execute the untargeted version of the PGD and Auto-PGD attacks.
+Evaluate the results and compare both attacks in terms of success. Share your
+conclusions.}
+The PGD and APGD attacks seem to be unsuccessful.
+The clean accuracies achieved by the two model instances are 0.59 and 0.62 respectively.
+However, these are also the adversarial accuracies for the PGD and APGD attacks respectively.
+This is unexpected.
+I conclude that the most likely reason for this result, is that the attacks cannot "fool" the model, because the model is too "stupid" to be properly fooled; it has not learnt the data really well, and is possibly oblivious to the perturbations made in the adversarial examples.
+For a future experiment, I would like to try out a different model architecture with more training, and to increase the epsilon value as to make the attacks more potent.
+
+\subsection{Execute the targeted version of the PGD and Auto-PGD attacks.
+Evaluate the results and compare both attacks in terms of success. Use class
+cat (class index 3) as your target. Share your conclusions.}
+Both the PGD and APGD attacks seem successful.
+The cleanly trained model instances achieve clean accuracies of 0.58 and 0.62 respectively, very similar to the models trained for the untargeted GPD and APGD attacks.
+However, being targeted, the PGD attack results in an adversarial accuracy of 0.10, while the APGD attack results in an adversarial accuracy of 0.09.
+We can conclude that the model has been successfully attacked.
+
+\subsection{Explain why the PGD attack starts at a random point (rather than
+at the input point itself). Implement and execute the untargeted PGD attack
+that starts at the input point. Compare the results with those of the untargeted
+PGD attack from part (a).}
+PGD starts at a random point as opposed to the original input point, because, when attacking a model, we want to find potential perturbations that cause the model to predict a different target than what is correct.
+By selecting a random point, we already start out with a perturbation to use, and can search for better perturbations from there.
+If we started at the original input, we would first have to search for a perturbation that is far enough from the input for the model to predict a different target, before we could try to optimize our perturbations.
+
+Our implementation of the untargeted PGD starting at the input point does not seem to have led to a successful attack.
+The clean accuracy achieved by the model is 0.59, while the adversarial accuracy is 0.57.
+This is quite similar to the untargeted PGD attack performed earlier.
+I conclude that the reason for this seemingly unsuccessful attack is the same as mentioned earlier: that is, the model is not trained well enough to properly be fooled by the attack.
+However, it may be possible that for this attack, the attack model itself did not train well, since it had to start at the original input point.
+It might not have been able to find a good perturbation to attack with.
+
+\subsection{Explain the difference between the PGD and Auto-PGD attacks. Which
+shortcomings of PGD have been improved by Auto-PGD?}
+The shortcomings of PGD are discussed by Corce and Hein (see \url{https://arxiv.org/pdf/2003.01690.pdf}), authors of the Auto-PGD attack. 
+They argue that PGD has three main shortcomings.
+First, PGD has a fixed step size, that is very sensitive to change, and cannot guarantee convergence during training.
+Second, PGD tends to plateau after only a few iterations of training.
+Third, PGD does not take into consideration how and if the training is developing successfully.
+Auto-PGD aims to fix these issues by dividing the number of iteration into an exploration phase, where it searches for a good starting point, and an exploitation phase, where it tries to produce the best results.
+The transition between these phases is done applying an iteratively reducing step size, whose change is dependent on the current optimization trend.
+This means that Auto-PGD improves over PGD by having less hyperparameters (learning those instead) and can adjust the optimization better during training.
+
+\section{Quality Discussion}
+% Model traint niet goed dus untargeted attacks lijken beter dan ze zijn.
+My main point of discussion is the unsuccessfulness of the attacks: it seemed that some untargeted attacks failed when they were supposed to succeed.
+I think that this is because of the neural network being attacked.
+The model is not well-trained on the data, which can be seen by the lackluster clean accuracies always being about 0.60.
+I think that the model isn't fooled all that well, because it already has a hard time getting the clean images right.
+It should learn the clean images well first, before it is "smart enough" to be fooled.
+This low clean accuracy makes the neural network's robustness against attacks seem inflated: clean and adversarial accuracies are roughly the same, not because the neural network is very robust, but because all accuracies were already low in the first place.
 
 \end{document}
