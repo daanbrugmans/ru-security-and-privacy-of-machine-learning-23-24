@@ -1,4 +1,5 @@
 tutorials/week-*/data/*
+.vscode
 
 ### JupyterNotebooks ###
 # gitignore template for Jupyter Notebooks
