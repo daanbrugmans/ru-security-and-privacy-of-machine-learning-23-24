@@ -1,4 +1,5 @@
 tutorials/week-*/data/*
+assignments/assignment-*/**/*.pt
 .vscode
 
 ### JupyterNotebooks ###
