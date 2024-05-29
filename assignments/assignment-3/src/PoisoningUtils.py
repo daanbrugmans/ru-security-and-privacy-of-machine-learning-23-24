@@ -8,9 +8,12 @@ def poison_single_image(image, label, BACKDOOR_TARGET_CLASS, STD_DEV, MEAN):
     return triggered_image, BACKDOOR_TARGET_CLASS
 
 
-class ColorTriggerBackdoorData:
+class BackdoorData:
+    """Creates a version of the given data with a backdoor inserted.
+    
+    Taken from the week 11 lab notebook (Federated Learning, dr. Picek) and refactored to take an Attack object for executing the attack on a single image."""
 
-    def __init__(self, data_loader, pdr, COMPUTATION_DEVICE, BACKDOOR_TARGET_CLASS, STD_DEV, MEAN):
+    def __init__(self, data_loader, attack, pdr, COMPUTATION_DEVICE, BACKDOOR_TARGET_CLASS, STD_DEV, MEAN):
         self.batches = []
         self.COMPUTATION_DEVICE = COMPUTATION_DEVICE
         for batch in data_loader:
@@ -21,8 +24,9 @@ class ColorTriggerBackdoorData:
             for image_index in range(poisoning_for_batch):
                 image = images_of_batch[image_index]
                 label = labels_of_batch[image_index]
-                image, label = poison_single_image(image, label, BACKDOOR_TARGET_CLASS=BACKDOOR_TARGET_CLASS, STD_DEV=STD_DEV, MEAN=MEAN)
-                labels_of_batch[image_index] = label
+                # image, label = poison_single_image(image, label, BACKDOOR_TARGET_CLASS=BACKDOOR_TARGET_CLASS, STD_DEV=STD_DEV, MEAN=MEAN)
+                image = attack.execute(image)
+                labels_of_batch[image_index] = BACKDOOR_TARGET_CLASS
                 images_of_batch[image_index] = image
             labels_of_batch = torch.from_numpy(np.array(labels_of_batch))
             labels_of_batch = labels_of_batch.to(dtype=torch.int64)
