@@ -1,6 +1,7 @@
 notebook
 matplotlib
 numpy
+pandas
 Pillow
 scikit_learn
 torch
