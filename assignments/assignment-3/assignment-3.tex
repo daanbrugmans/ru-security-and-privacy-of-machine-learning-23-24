@@ -134,7 +134,7 @@ Having learned from altered data, the weights of the malignant models will look 
 By comparing these weights using the Euclidean distance, we find the models whose weights are most similar to one another, since they were trained on similar data, and Krum then picks these models to aggregate local weights from.
 This way, Krum excludes local models which are further removed from other models in the Euclidean space, which are likely to be malignant/backdoored.
 
-In figure \ref{fig:aggregation_method}, we can see that the accuracy for the global models is roughly the same when using either FedAvg or Krum.
+In figure \ref{fig:aggregation_method}, we can see that the accuracy for the global models is nearly identical when using either FedAvg or Krum.
 However, while FedAvg results in a model with an ASR of over 90\%, the ASR drops to near-zero when Krum is used as an aggregation method.
 This is because of the reason explained above: Krum excludes the malignant model from the aggregation process by recognizing that it is far removed from the benign models in a Euclidean space.
 The malignant model's exclusion from the aggregation prevents the insertion of the backdoor, which is why the ASR is so low when using Krum.
@@ -209,11 +209,12 @@ models. The model shall be down-scaled if the $L_2$-norm exceeds the boundary (c
 \end{figure}
 See figure \ref{fig:clipping_defense} for the accuracy and ASR, figure \ref{fig:before_clipping} for the $L_2$-norms before clipping, and figure \ref{fig:after_clipping} for the $L_2$-norms after clipping.
 
-From the results shown in figure \ref{fig:clipping_defense}, I would consider the defense to be unsuccessful.
+From the results shown in figure \ref{fig:clipping_defense}, I would consider the defense to be ineffective.
 Regardless of clipping being applied as a defense, the scaling attack succeeds at inserting a backdoor into the global model.
-The clipping defense has not changed this fact: the ASR is practically perfect, but the accuracy is abhorrent.
-However, when the logs of the aggregation rounds are inspected, one can see that some rounds end with an accuracy much higher than the final accuracy, even reaching over 50\% accuracy.
+The clipping defense has barely changed this fact: although the ASR has dropped, it is still high, and the accuracy is still very low.
+However, when the logs of the aggregation rounds are inspected, one can see that some rounds end with an accuracy much higher than the final accuracy.
 This would imply that the clipping defense does have some effect, but that this effect is too weak to properly mitigate the scaling attack in its entirety.
+We can see this in the graphs of figures \ref{fig:before_clipping} and \ref{fig:after_clipping}: the poisoned $L_2$-norm has been clipped, but only slightly, and is still much larger than the benign $L_2$ norms.
 
 \section{Quality Discussion}
 I would argue that the quality of my results are good enough to showcase the varying FL scenarios and how they differ from one another.
