@@ -1,5 +1,6 @@
 tutorials/week-*/data/*
 assignments/assignment-*/**/*.pt
+**/assignment-*-s1080742.zip
 .vscode
 
 ### JupyterNotebooks ###
