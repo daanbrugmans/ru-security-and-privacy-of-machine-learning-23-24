@@ -111,7 +111,7 @@ What do you think is the influence of the number of selected clients on the
 performance of the backdoor attack in the federated setting? Share your conclusions.}
 I think that the influence of the number of selected clients on the performance of the backdoor attack will vary significantly depending on what we assume that the share of malignant clients will be.
 If the share of malignant clients is small, then I expect the procedure to be a mildly useful defense, as the global model has an opportunity to recuperate from learning the backdoor every once in a while when a malignant user is excluded.
-However, if the share of malignant clients is bigger, or even approaching a 50/50 split between benign and malignant clients, then I think that the procedure may only make the backdoor worse, since there is a real chance that there will be rounds where the global model aggregates from mostly or exclusively malignant clients.
+However, if the share of malignant clients is bigger, or even approaching a 50/50 split between benign and malignant clients, then I think that the procedure may only make the backdoor more effective, since there is a real chance that there will be rounds where the global model aggregates from mostly or exclusively malignant clients.
 This dynamic holds true for when the number of selected clients changes: the smaller the number of selected clients is, the more likely it is that the model aggregates from mostly malignant clients for some rounds, and the more likely it is that the backdoor will be inserted.
 
 \subsubsection{In question 1(a) we asked you to perform Federated Learning using
